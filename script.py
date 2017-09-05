@@ -1,3 +1,4 @@
+#! /usr/env python3
 import markovify
 import json
 import os
