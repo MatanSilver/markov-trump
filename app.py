@@ -7,6 +7,8 @@ import click
 import wget
 import zipfile
 import requests
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
 
 def load_json():
     with open("./master_2016.json", 'r') as f:
