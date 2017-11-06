@@ -16,4 +16,4 @@ async function replaceCurrentTweet() {
   current_tweet_elem.innerHTML = new_tweet
 }
 
-setInterval(replaceCurrentTweet, 10 * 1000)
+setInterval(replaceCurrentTweet, 5 * 1000)
