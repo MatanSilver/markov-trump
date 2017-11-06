@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Tweet Generator</title>
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="static/app.css">
+  <title>Tweet Generator</title>
+</head>
 
-  <body>
+<body>
+  <h1 class="title">Markov Makes Fun of Don</h1>
+  <div class="container">
     <p id="current_tweet"> {{ initial_tweet }} </p>
-    <script src='static/tweetfetcher.js' charset='utf-8'></script>
-  </body>
+  </div>
+  <script src='static/tweetfetcher.js' charset='utf-8'></script>
+</body>
 </html>
