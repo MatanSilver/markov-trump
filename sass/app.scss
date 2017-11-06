@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css?family=Lobster');
+$primary-font:  Helvetica, sans-serif;
+$lobster:  'Lobster', cursive;
+$primary-color: ff;
+$bg-body: #a3a3c2;
+
+body {
+	font: 100% $primary-font;
+	//color: $primary-color;
+	background-color: $bg-body;
+}
+
+.title {
+	font-family: 'Lobster', cursive;
+	color: $primary-color;
+	text-align: center;
+}
+
+.container {
+	padding: 10px;
+	margin: 0 auto;
+	max-width: 700px;
+	background-color: #ffffff;
+	border: 1px;
+	border-color: #000000;
+	border-style: solid;
+	border-radius: 10px;
+}
