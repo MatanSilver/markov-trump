@@ -13,15 +13,25 @@ ssl._create_default_https_context = ssl._create_unverified_context
 
 app = flask.Flask(__name__)
 
+def sanitize_tweet(tweet):
+    '''
+    Sanitizes the contents of a tweet to produce more sensible
+    tweets as output
+    '''
+    # Removes any http links in the tweet
+    is_not_link = lambda s: not s.startswith('http')
+    return ' '.join(filter(is_not_link, tweet.split(' ')))
+
 def load_json(filepath):
     '''
-    Returns a dictionary representing the tweets in the JSON file pointed
+    Returns a string of all the tweets in the JSON file pointed
     to by filepath
     '''
     with open(filepath, 'r') as f:
         jsontext = f.read()
         trumpdict = json.loads(jsontext)
-        return "".join(["{}\n".format(tweet["text"]) for tweet in trumpdict])
+        tweets = (sanitize_tweet(tweet['text']) for tweet in trumpdict)
+        return '\n'.join(tweets)
 
 def pull_json():
     '''
