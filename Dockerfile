@@ -11,4 +11,5 @@ RUN npm install
 RUN gulp sass
 EXPOSE 5000
 
-ENTRYPOINT ["python3","app.py","runserver"]
+CMD [ "python3", "app.py", "runserver" ]
+#ENTRYPOINT ["python3","app.py","runserver"]

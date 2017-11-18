@@ -101,7 +101,7 @@ def cli():
 
 @click.command()
 def runserver():
-    app.run()
+    app.run(host='')
 
 cli.add_command(runserver)
 
