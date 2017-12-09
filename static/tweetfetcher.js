@@ -40,6 +40,7 @@ function fade(element) {
 function unfade(element) {
   return new Promise((res, rej) => {
     var op = 0.1; // initial opacity
+    element.style.display = 'block';
     var timer = setInterval(function() {
       if (op >= 1) {
         clearInterval(timer);
