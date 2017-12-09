@@ -3,7 +3,7 @@ MAINTAINER matansilver@gmail.com
 
 WORKDIR /app
 COPY . .
-RUN apk add --update python3 nodejs
+RUN apk add --update python3 nodejs=6.9.5-r1
 RUN node --version
 RUN pip3 install pipenv
 RUN pipenv install --system
