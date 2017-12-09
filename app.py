@@ -100,8 +100,9 @@ def cli():
     pass
 
 @click.command()
-def runserver():
-    app.run(host='')
+@click.option('--port', default=80, help='Port to listen on')
+def runserver(port=80):
+    app.run(host='', port=port)
 
 cli.add_command(runserver)
 
