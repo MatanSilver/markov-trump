@@ -4,6 +4,7 @@ MAINTAINER matansilver@gmail.com
 WORKDIR /app
 COPY . .
 RUN apk add --update python3 nodejs
+RUN node --version
 RUN pip3 install pipenv
 RUN pipenv install --system
 RUN npm install gulp -g
