@@ -107,4 +107,4 @@ def runserver(port=80):
 cli.add_command(runserver)
 
 if __name__ == "__main__":
-    cli()
+    applrun(host='', port=5000)

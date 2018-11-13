@@ -12,7 +12,6 @@ flask = "*"
 click = "*"
 requests = "*"
 wget = "*"
-
+gunicorn = "*"
 
 [dev-packages]
-
