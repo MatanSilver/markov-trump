@@ -1,5 +1,4 @@
 .env
 *.zip
-static/app.css
 node_modules/*
 master_2016.json
