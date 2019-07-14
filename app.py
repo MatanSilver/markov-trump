@@ -9,7 +9,20 @@ import zipfile
 import requests
 import ssl
 import functools
+import sqlite3
 ssl._create_default_https_context = ssl._create_unverified_context
+consumer_key=os.environ['TWITTER_KEY']
+consumer_secret=os.environ['TWITTER_SECRET']
+access_key=os.environ['TWITTER_ACCESS_KEY']
+access_secret=os.environ['TWITTER_ACCESS_SECRET']
+conn = sqlite3.connect('tweet_cache.db')
+c=conn.cursor()
+c.execute('CREATE TABLE accounts (account_name text, tweet_json text)')
+api = twitter.Api(consumer_key=consumer_key,
+                  consumer_secret=consumer_secret,
+                  access_token_key=access_key,
+                  access_token_secret=access_secret,
+                  sleep_on_rate_limit=True)
 
 app = flask.Flask(__name__)
 
@@ -22,26 +35,39 @@ def sanitize_tweet(tweet):
     is_not_link = lambda s: not s.startswith('http')
     return ' '.join(filter(is_not_link, tweet.split(' ')))
 
-def load_json(filepath):
-    '''
-    Returns a string of all the tweets in the JSON file pointed
-    to by filepath
-    '''
-    with open(filepath, 'r') as f:
-        jsontext = f.read()
-        trumpdict = json.loads(jsontext)
-        tweets = (sanitize_tweet(tweet['text']) for tweet in trumpdict)
-        return '\n'.join(tweets)
+def get_all_tweets(screen_name):
+	#Twitter only allows access to a users most recent 3240 tweets with this method
 
-def pull_json():
-    '''
-    Fetches the archive representing trump's 2016 tweets and unzips it in place
-    '''
-    url = "https://github.com/bpb27/trump_tweet_data_archive/raw/master/master_2016.json.zip"
-    filename = wget.download(url)
-    zip_ref = zipfile.ZipFile(filename, 'r')
-    zip_ref.extractall('.')
-    zip_ref.close()
+	#initialize a list to hold all the tweepy Tweets
+	alltweets = []
+
+	#make initial request for most recent tweets (200 is the maximum allowed count)
+	new_tweets = api.GetUserTimeline(screen_name=screen_name,count=200)
+
+	#save most recent tweets
+	alltweets.extend(new_tweets)
+
+	#save the id of the oldest tweet less one
+	oldest = alltweets[-1].id - 1
+
+	#keep grabbing tweets until there are no tweets left to grab
+	while len(new_tweets) > 0:
+		print "getting tweets before %s" % (oldest)
+
+		#all subsiquent requests use the max_id param to prevent duplicates
+		new_tweets = api.user_timeline(screen_name = screen_name,count=200,max_id=oldest)
+
+		#save most recent tweets
+		alltweets.extend(new_tweets)
+
+		#update the id of the oldest tweet less one
+		oldest = alltweets[-1].id - 1
+
+		print "...%s tweets downloaded so far" % (len(alltweets))
+
+	#transform the tweepy tweets into a 2D array that will populate the csv
+	outtweets = [[tweet.id_str, tweet.created_at, tweet.text.encode("utf-8")] for tweet in alltweets]
+    c.execute('INSERT INTO accounts (account_name, tweet_json) values (?, ?)', screen_name, json.dumps(outtweets))
 
 @functools.lru_cache(maxsize = None)
 def load_text_model(filepath):
@@ -62,26 +88,16 @@ def generate(markov_model):
     '''
     return markov_model.make_short_sentence(140)
 
-def generate_trump_quote():
-    '''
-    Returns a string with a quote generated from
-    the trump tweet markov model
-    '''
-    return generate(load_text_model('./master_2016.json'))
-
 @app.route("/generate")
-@app.route("/generate/<person>")
-def generate_quote(person = None):
+@app.route("/generate/<account>")
+def generate_quote(account = None):
     '''
     Returns a JSON response with a generated tweet from the given
     person. Defaults to Donald Trump if no person is passed or if
     the person passed cannot be found
     '''
-    sources = {
-        'trump': generate_trump_quote
-    }
 
-    if person == None or person not in sources:
+    if account == None or account not in sources:
         source = sources['trump']
     else:
         source = sources[person]
@@ -93,7 +109,7 @@ def index():
     '''
     Returns the tweet generator page
     '''
-    return flask.render_template('index.html', initial_tweet = generate_trump_quote())
+    return flask.render_template('index.html', initial_tweet = generate_quote(account="realDonaldTrump"))
 
 @click.group()
 def cli():
