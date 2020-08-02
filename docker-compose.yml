@@ -6,3 +6,16 @@ services:
     container_name: markov_trump
     ports:
       - 5000:5000
+    networks:
+      - discovery
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.markov-trump.rule=Host(`markov-trump.matansilver.com`)"
+      - "traefik.http.routers.markov-trump.entrypoints=web-secure"
+      - "traefik.docker.network=discovery"
+      - "traefik.http.routers.markov-trump.tls.certresolver=le"
+      - "traefik.http.services.markov-trump.loadbalancer.server.port=5000"
+
+networks:
+  discovery:
+    external: true

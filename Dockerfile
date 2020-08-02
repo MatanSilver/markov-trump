@@ -20,4 +20,4 @@ RUN pip install -r requirements.txt
 RUN apk del -r python3-dev
 # prep
 COPY . /app/
-CMD ["python3", "app.py"]
+CMD gunicorn app:app -b 0.0.0.0:5000
