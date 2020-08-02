@@ -1,0 +1,7 @@
+markovify
+flask
+click
+requests
+wget
+gunicorn
+python-twitter

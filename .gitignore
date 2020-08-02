@@ -2,3 +2,5 @@
 *.zip
 node_modules/*
 master_2016.json
+__pycache__/
+venv/
