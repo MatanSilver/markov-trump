@@ -15,6 +15,7 @@ services:
       - "traefik.docker.network=discovery"
       - "traefik.http.routers.markov-trump.tls.certresolver=le"
       - "traefik.http.services.markov-trump.loadbalancer.server.port=5000"
+    restart: unless-stopped
 
 networks:
   discovery:
